@@ -1,0 +1,141 @@
+*{
+	/*General*/
+	list-style: none;
+	margin: 0px;
+	outline: 0;
+	padding: 0px; 
+	text-align: center;
+	text-decoration: none;
+}
+
+body{
+	background-color: #FFF;
+	font-family: helvetica, arial , sans-serif;
+	font-size: 16px;
+}
+
+#tools{
+	background-color: #DDD;
+	display: inline-block;
+	float: left;
+	height: 498px;
+	vertical-align: top;
+	width: 120px;
+	border: 1px solid #999;
+}
+
+#tools ul{
+	height: 100%;
+}
+
+#tools li{
+	display: block;
+	width: 80%;
+	height:15%;
+	border: 2px solid #666;
+	margin: 8px auto;
+	border-radius: 8px;
+	font-size: 13px;
+	text-align: bottom;
+	font-weight: bold;
+	-webkit-touch-callout: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+         -o-user-select: none;
+            user-select: none;
+
+    cursor: pointer;
+    box-shadow: 0px 3px 3px rgba(50, 50, 50, 0.75);
+}
+
+.crear{
+	background-image: url("img/crear.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.crear:hover{
+	background-image: url("img/crearactive.png");
+	background-color: rgba(0,0,0, 0.2);
+	color: #FFF;
+}
+
+.crear:active{
+	background-image: url("img/crearactive.png");
+	background-color: rgba(0,0,0, 0.6);
+	color: #FFF;
+}
+
+.borrar{
+	background-image: url("img/eliminar.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.borrar:hover{
+	background-image: url("img/eliminaractive.png");
+	background-color: rgba(0,0,0, 0.2);
+	color: #FFF;
+}
+
+.borrar:active{
+	background-image: url("img/eliminaractive.png");
+	background-color: rgba(0,0,0, 0.6);
+	color: #FFF;
+}
+
+.mover{
+	background-image: url("img/move.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.mover:hover{
+	background-image: url("img/moveactive.png");
+	background-color: rgba(0,0,0, 0.2);
+	color: #FFF;
+}
+
+.mover:active{
+	background-image: url("img/moveactive.png");
+	background-color: rgba(0,0,0, 0.6);
+	color: #FFF;
+}
+
+.unir{
+	background-image: url("img/line.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.unir:hover{
+	background-image: url("img/lineactive.png");
+	background-color: rgba(0,0,0, 0.2);
+	color: #FFF;
+}
+
+.unir:active{
+	background-image: url("img/lineactive.png");
+	background-color: rgba(0,0,0, 0.6);
+	color: #FFF;
+}
+
+#workspace{
+	background-color: rgba(255,255,255, .8);
+    display: inline-block;
+    height: 500px;
+    width: 980px;
+    float: left;
+    border-right: 1px solid #999;
+}
+
+#solution{
+	background-color: #BBB;
+	display: inline-block;
+	height: 200px;
+	width: 1100px;
+	min-width: 900px;
+	float: left;
+	border: 1px solid #999;
+}
