@@ -1,472 +1,401 @@
 #import('dart:html');
 #import('dart:core');
+#import('DrawUtils.dart');
+#import('SearchAlgorithms.dart');
 
-class CommonUtils {
-  static List<Object> Revert(List<Object> RList){
-    List<Object> TempList = new List<Object>();
-    for (int i=RList.length-1; i>=0; i--){
-      TempList.add(RList[i]);
-    }
-    return TempList;
-  }
-}
 
-class GraphAriste{
-  int value;
-  GraphNode Node;
-  
-  GraphAriste(this.value,this.Node);
-}
-
-class GraphNode{
-  String Data;
-  bool Final;
-  int Heuristic;
-  List<GraphAriste> Aristes;
-  
-  GraphNode(String Data){
-    this.Data = Data;
-    Final = false;
-    Aristes = new List<GraphAriste>();
-  }
-  
-  setFinal(){
-    this.Final = true;
-  }
-  
-  ConnectTo(GraphNode GNode,int Value){
-    this.Aristes.add(new GraphAriste(Value,GNode));
-  }
-}
-
-class Path {
-  int Value;
-  List<GraphNode> NodesCollecion;
-  bool Extended;
-  
-  Path(){
-    this.NodesCollecion = new List<GraphNode>(); 
-    this.Extended = false;
-  }  
-  
-  int getHeuristic(){
-    return NodesCollecion.last().Heuristic;
-  }
-  
-  bool hasFinalNode(){
-    for (int i=0; i< this.NodesCollecion.length; i++){
-      if (this.NodesCollecion[i].Final)
-        return true;
-    }
-    return false;
-  }
-  
-  List<Path> ExtendPath(){
-    List<Path> ExtendedPath = new List<Path>();
-    this.Extended = true;
+  class DrawGraph{
+    List<DrawNode> Nodes;
+    List<DrawAriste> Aristes;
+    DrawNode CurrentSelectedNode;
     
-    for (var i=0; i< this.NodesCollecion[this.NodesCollecion.length-1].Aristes.length; i++){
-        Path NewPath = new Path();
-        for (var j=0; j<this.NodesCollecion.length; j++){
-          NewPath.AddNode(this.NodesCollecion[j]);
+    bool IsAdd = true;
+    bool IsJoin = false;
+    bool IsMove = false;
+    bool IsRemove = false;
+    bool IsSelect = false;
+    
+    ResetStates(){
+      IsAdd = false;
+      IsJoin = false;
+      IsMove = false;
+      IsRemove = false;
+      IsSelect = false;      
+    }
+    
+    SetAdd(){
+      this.ResetStates();
+      IsAdd = true;
+    }
+    
+    SetJoin(){
+      this.ResetStates();
+      IsJoin = true;
+    }
+    
+    SetMove(){
+      this.ResetStates();
+      IsMove = true;
+    }
+    
+    SetRemove(){
+      this.ResetStates();
+      IsRemove = true;
+    }
+    
+    SetSelect(){
+      this.ResetStates();
+      IsSelect = true;      
+    }
+    
+    DrawGraph(){
+      this.Nodes = new List<DrawNode>();
+      this.Aristes = new List<DrawAriste>();
+    }
+    
+    BlockConnectedAristes(DrawNode node){      
+      for (int i=0; i < this.Aristes.length; i++){
+        if (this.Aristes[i].IsConnectedTo(node)){
+          this.Aristes[i].Block();
         }
-        NewPath.AddNode(this.NodesCollecion[this.NodesCollecion.length-1].Aristes[i].Node);
-        NewPath.Value=this.NodesCollecion[this.NodesCollecion.length-1].Aristes[i].value+this.Value;
-        ExtendedPath.add(NewPath);
-    }
-    
-    return ExtendedPath;
-  }
-  
-  AddNode(GraphNode GNode){
-    this.NodesCollecion.add(GNode);
-  }
-  
-  String GetAbsolutePath(){
-    String s="(";
-    for (var i=0; i< this.NodesCollecion.length ; i++){
-      s=s.concat(CommonUtils.Revert(this.NodesCollecion)[i].Data.toString());
-    }
-    s=s.concat(")");
-    return s;
-  }  
-  
-  String GetStrHeuristicPath(){
-    String s="(";
-    s=s.concat((this.Value+this.getHeuristic()).toString());
-    for (var i=0; i< this.NodesCollecion.length ; i++){
-      s=s.concat(CommonUtils.Revert(this.NodesCollecion)[i].Data.toString());
-    }
-    s=s.concat(")");
-    return s;
-  }
-
-  String GetStr(){
-    String s="(";
-    s=s.concat(this.getHeuristic().toString());
-    for (var i=0; i< this.NodesCollecion.length ; i++){
-      s=s.concat(CommonUtils.Revert(this.NodesCollecion)[i].Data.toString());
-    }
-    s=s.concat(")");
-    return s;
-  } 
-  
-  String GetStrHeuristic(){
-    String s="(";
-    s=s.concat(this.getHeuristic().toString());
-    for (var i=0; i< this.NodesCollecion.length ; i++){
-      s=s.concat(CommonUtils.Revert(this.NodesCollecion)[i].Data.toString());
-    }
-    s=s.concat(")");
-    return s;
-  }  
-  
-  String GetStrPath(){
-   String s="(";
-   s=s.concat(this.Value.toString());
-   for (var i=0; i< this.NodesCollecion.length ; i++){
-     s=s.concat(CommonUtils.Revert(this.NodesCollecion)[i].Data.toString());
-   }
-   s=s.concat(")");
-   return s;
-  }
- 
-}
-
-class PathRow{
-  List<Path> Paths;
-  
-  PathRow(){
-    this.Paths = new List<Path>();
-  }
-  
-  AddPath(Path QPath){
-    this.Paths.add(QPath);
-  }
-  
-  List<Path> GetUnexpandedPaths(){
-    List<Path> UnexpandedPaths = new List<Path>();
-    for (var i=0; i<this.Paths.length ; i++){
-      if (!this.Paths[i].Extended)
-        UnexpandedPaths.add(this.Paths[i]);
-    }
-    return UnexpandedPaths;
-  }
-  
-  Print(){
-    String s="";
-    for(var i=0; i<this.Paths.length; i++){
-      s = s.concat(Paths[i].GetAbsolutePath());
-    }
-    print(s);
-  }   
-  
-  PrintHeuristic(){
-    String s="";
-    for(var i=0; i<this.Paths.length; i++){
-      s = s.concat(Paths[i].GetStrHeuristic());
-    }
-    print(s);
-  }    
-  
-  PrintHeuristicPaths(){
-    String s="";
-    for(var i=0; i<this.Paths.length; i++){
-      s = s.concat(Paths[i].GetStrHeuristicPath());
-    }
-    print(s);
-  }  
-  
-  PrintPaths(){
-    String s="";
-    for(var i=0; i<this.Paths.length; i++){
-      s = s.concat(Paths[i].GetStrPath());
-    }
-    print(s);
-  }
-  
-  Path GetLastPath(){
-    return this.Paths.last();
-  }
-  
-  Path GetFirstPath(){
-    return this.Paths[0];
-  }
-  
-  Path GetLowestPath(){
-    int LowestVal;
-    Path LowestPath = this.Paths[0];
-    LowestVal = LowestPath.Value;
-    
-    for (var i=1; i<Paths.length; i++){
-        if (Paths[i].Value<LowestVal)
-          LowestPath = Paths[i];
-    }
-    
-    return LowestPath;
-  }
-  
-  Path GetLowestHeuristicPath(){
-    int LowestVal;
-    Path LowestPath = this.Paths[0];
-    LowestVal = LowestPath.Value;
-    
-    for (var i=1; i<Paths.length; i++){
-        if ((Paths[i].Value+Paths[i].getHeuristic())<LowestVal)
-          LowestPath = Paths[i];
-    }
-    
-    return LowestPath;
-  }
-  
-  Path GetLowestHeuristic(){
-    int LowestVal;
-    Path LowestPath = this.Paths[0];
-    LowestVal = 0;
-    
-    for (var i=1; i<Paths.length; i++){
-        if ((Paths[i].getHeuristic())<=LowestVal)
-          LowestPath = Paths[i];
-    }
-    
-    return LowestPath;    
-  }  
-}
-
-class PathTable{
-  List<PathRow> Rows;
-  
-  PathTable(){
-    this.Rows = new List<PathRow>();
-  }
-  
-  AddRow(PathRow NewRow){
-    this.Rows.add(NewRow);
-  }
-  
-  PathRow GetLastRow(){
-    return this.Rows.last();
-  }
-}
-
-class Graph {
-  List<GraphNode> NodesCollecion;
-  GraphNode InitialState;
-  GraphNode FinalState;
-  GraphNode CurrentNode;
-  
-  setInitialState(GraphNode GNode){
-    this.InitialState = GNode;
-  }
-  
-  setFinalState(GraphNode GNode){
-    this.FinalState = GNode;
-  }
-  
-  Graph(){
-    this.NodesCollecion = new List<GraphNode>();
-  }
-}
-
-class SearchAlgorithms{
-  
-  static FirstWide(Graph GraphToProcess){
-    PathTable CU_QTable = new PathTable();
-    PathRow InitialRow = new PathRow();
-    Path InitialPath = new Path();
-    InitialPath.AddNode(GraphToProcess.InitialState);
-    InitialPath.Value = 0;
-    InitialRow.AddPath(InitialPath);
-    InitialRow.Print();
-    CU_QTable.AddRow(InitialRow);
-    
-    PathRow TempRow;
-    PathRow NewRow;
-    do{
-      TempRow = CU_QTable.GetLastRow();
-      NewRow = new PathRow();
-      if (TempRow.GetFirstPath().hasFinalNode())
-        break;    
-      for (var i=0; i<TempRow.GetFirstPath().ExtendPath().length; i++){
-        NewRow.AddPath(TempRow.GetFirstPath().ExtendPath()[i]);
       }
-      List<Path> TempList = new List<Path>();
-      TempList.addAll(TempRow.GetUnexpandedPaths());
-      TempList.addAll(NewRow.Paths);
-      NewRow.Paths = TempList;
-      //NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
-      CU_QTable.AddRow(NewRow);
-      NewRow.Print();
-    }while(true);  
+    }
+    
+    BlockSelectedAristes(){      
+      for (int i=0; i < this.Aristes.length; i++){
+        if (this.Aristes[i].IsSelected){
+          this.Aristes[i].Block();
+        }
+      }
+    }    
+    
+    GetSelectedNodesID(){
+      int nodeCount = this.Nodes.length;
+      List<int> SelectedNodesID;
+      
+      SelectedNodesID = new List<int>();
+      for (int i=0; i<nodeCount; i++){
+        if (this.Nodes[i].isSelected){
+          SelectedNodesID.add(i);
+        }
+      }
+      
+      return SelectedNodesID;      
+    }
+    
+    GetSelectedNodes(){
+      int nodeCount = this.Nodes.length;
+      List<DrawNode> SelectedNodes;
+      
+      SelectedNodes = new List<DrawNode>();
+      for (int i=0; i<nodeCount; i++){
+        if (this.Nodes[i].isSelected){
+          SelectedNodes.add(this.Nodes[i]);
+        }
+      }
+      
+      return SelectedNodes;
+    }
+    
+    ClearNodeSelection(){
+      this.Nodes.forEach((node) => node.isSelected = false);
+    }
+    
+    ClearAristesSelection(){
+      this.Aristes.forEach((ariste) => ariste.IsSelected = false);
+    }
+    
+    HasAristeClick(int x, int y){
+      int aristeCount = this.Aristes.length;
+      for (int i=0; i<aristeCount; i++){
+        if (this.Aristes[i].IsInside(x, y)){
+          if (this.Aristes[i].IsSelected == true)
+          {
+            this.Aristes[i].IsSelected = false;
+          }
+          else
+          {
+            this.Aristes[i].IsSelected = true;
+          }
+          return true;
+        }
+      }
+      return false;        
+    }
+    
+    HasNodeClick(int x, int y){
+      int nodeCount = this.Nodes.length;
+      for (int i=0; i<nodeCount; i++){
+        if (this.Nodes[i].IsInside(x, y)){
+          if (this.Nodes[i].isSelected == true)
+          {
+            this.Nodes[i].isSelected = false;
+          }
+          else
+          {
+            this.Nodes[i].isSelected = true;
+            this.CurrentSelectedNode = this.Nodes[i];            
+          }
+          return true;
+        }
+      }
+      return false;      
+    }
+    
+    AddNewNode(DrawNode node)
+    {
+      if (this.Nodes.length >0 ){ 
+        this.Nodes[0].isInitial = true;
+        this.Nodes.last().isLast = false;
+      }
+      this.Nodes.add(node);
+    }
+    
+    Draw(CanvasRenderingContext2D ctx){
+      ctx.clearRect(0, 0, 600, 400);
+      this.Nodes.forEach((node) => node.Draw(ctx));
+      this.Aristes.forEach((ariste) => ariste.Draw(ctx));
+    }
   }
   
-  static FirstDeep(Graph GraphToProcess){
-    PathTable CU_QTable = new PathTable();
-    PathRow InitialRow = new PathRow();
-    Path InitialPath = new Path();
-    InitialPath.AddNode(GraphToProcess.InitialState);
-    InitialPath.Value = 0;
-    InitialRow.AddPath(InitialPath);
-    InitialRow.Print();
-    CU_QTable.AddRow(InitialRow);
+  class SelectableShape {
+    int cx;
+    int cy;
+    int size;
     
-    PathRow TempRow;
-    PathRow NewRow;
-    do{
-      TempRow = CU_QTable.GetLastRow();
-      NewRow = new PathRow();
-      if (TempRow.GetFirstPath().hasFinalNode())
-        break;
-      for (var i=0; i<TempRow.GetLastPath().ExtendPath().length; i++){
-        NewRow.AddPath(TempRow.GetLastPath().ExtendPath()[i]);
-      }
-      List<Path> TempList = new List<Path>();
-      TempList.addAll(NewRow.Paths);
-      TempList.addAll(TempRow.GetUnexpandedPaths());
-      NewRow.Paths = TempList;
-      //NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
-      CU_QTable.AddRow(NewRow);
-      NewRow.Print();
-    }while(true);    
+    bool IsInside(int x, int y){
+      if (((x)>=this.cx-this.size/2) && ((x)<=(this.cx+this.size/2)) &&
+          ((y)>=this.cy-this.size/2) && ((y)<=(this.cy+this.size/2))
+          ){
+        return true;
+        }
+        else{
+        return false;
+        }
+    }    
   }
   
-  static FirstBest(Graph GraphToProcess){
-    PathTable CU_QTable = new PathTable();
-    PathRow InitialRow = new PathRow();
-    Path InitialPath = new Path();
-    InitialPath.AddNode(GraphToProcess.InitialState);
-    InitialPath.Value = 0;
-    InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
-    CU_QTable.AddRow(InitialRow);
+  class DrawAriste extends SelectableShape{
+    DrawNode initialN;
+    DrawNode finalN;
+    int val;
+    bool IsSelected=false;
+    bool IsBlocked = false;
     
-    PathRow TempRow;
-    PathRow NewRow;
-    do{
-      TempRow = CU_QTable.GetLastRow();
-      NewRow = new PathRow();
-      if (TempRow.GetLowestHeuristic().hasFinalNode())
-        break;    
-      for (var i=0; i<TempRow.GetLowestHeuristic().ExtendPath().length; i++){
-        NewRow.AddPath(TempRow.GetLowestHeuristic().ExtendPath()[i]);
+    Block(){
+      this.IsBlocked = true;
+      this.cx = -10;
+      this.cy = -10;
+    }
+    
+    bool IsConnectedTo(DrawNode node){
+      if ((node.isSame(initialN)) || (node.isSame(finalN))){
+        return true;
       }
-      NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
-      CU_QTable.AddRow(NewRow);
-      NewRow.PrintHeuristic();
-    }while(true);
-  }
-  
-  static UniFormCost(Graph GraphToProcess){
-    
-    PathTable CU_QTable = new PathTable();
-    PathRow InitialRow = new PathRow();
-    Path InitialPath = new Path();
-    InitialPath.AddNode(GraphToProcess.InitialState);
-    InitialPath.Value = 0;
-    InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
-    CU_QTable.AddRow(InitialRow);
-    
-    PathRow TempRow;
-    PathRow NewRow;
-    do{
-      TempRow = CU_QTable.GetLastRow();
-      NewRow = new PathRow();
-      if (TempRow.GetLowestPath().hasFinalNode())
-        break;    
-      for (var i=0; i<TempRow.GetLowestPath().ExtendPath().length; i++){
-        NewRow.AddPath(TempRow.GetLowestPath().ExtendPath()[i]);
+      else{
+        return false;
       }
-      NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
-      CU_QTable.AddRow(NewRow);
-      NewRow.PrintPaths();
-    }while(true); 
+    }
     
-  }
-  
-  static AStar(Graph GraphToProcess){
+    RecalculateAriste(){
+      this.cx = ((this.initialN.cx + this.finalN.cx) / 2).toInt();
+      this.cy = ((this.initialN.cy + this.finalN.cy) / 2).toInt();      
+    }
     
-    PathTable CU_QTable = new PathTable();
-    PathRow InitialRow = new PathRow();
-    Path InitialPath = new Path();
-    InitialPath.AddNode(GraphToProcess.InitialState);
-    InitialPath.Value = 0;
-    InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
-    CU_QTable.AddRow(InitialRow);
+    DrawAriste(DrawNode initialNode , DrawNode finalNode, int value){
+      this.initialN = initialNode;
+      this.finalN = finalNode;
+      this.cx = ((this.initialN.cx + this.finalN.cx) / 2).toInt();
+      this.cy = ((this.initialN.cy + this.finalN.cy) / 2).toInt();
+      this.val = value;
+      this.size = 40;
+    }
     
-    PathRow TempRow;
-    PathRow NewRow;
-    do{
-      TempRow = CU_QTable.GetLastRow();
-      NewRow = new PathRow();
-      if (TempRow.GetLowestHeuristicPath().hasFinalNode())
-        break;    
-      for (var i=0; i<TempRow.GetLowestHeuristicPath().ExtendPath().length; i++){
-        NewRow.AddPath(TempRow.GetLowestHeuristicPath().ExtendPath()[i]);
+    Draw(CanvasRenderingContext2D ctx){
+      if (!this.IsBlocked){
+        this.RecalculateAriste();
+      DrawUtils.DrawLine(ctx, this.initialN.cx,this.initialN.cy,this.finalN.cx ,this.finalN.cy,this.IsSelected);
       }
-      NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
-      CU_QTable.AddRow(NewRow);
-      NewRow.PrintHeuristicPaths();
-    }while(true); 
-    
+    }
   }  
-}
 
-void main() {
-  Graph CU_Graph = new Graph(); 
+  class DrawNode extends SelectableShape{
+    String val;
+    int h;
+    bool isLast = true;
+    bool isInitial = false;
+    bool isSelected = false;
+    
+    isSame(DrawNode node){
+      return this.val == node.val;
+    }
+        
+    DrawNode(int x, int y, String value ,int heuristic){
+      this.cx = x;
+      this.cy = y;
+      this.val = value;
+      this.h = heuristic;
+      this.size = 40;
+    }
+    
+    Draw(CanvasRenderingContext2D ctx){
+      if (this.isInitial)
+        DrawUtils.DrawInitialNode(ctx, this.cx, this.cy, this.val,"${this.h}",isSelected);
+      else if (this.isLast)
+        DrawUtils.DrawFinalNode(ctx, this.cx, this.cy, this.val,"${this.h}",isSelected);
+      else
+        DrawUtils.DrawNode(ctx, this.cx, this.cy, this.val,"${this.h}",isSelected);
+    }
+  }
   
-  GraphNode s = new GraphNode("s");
-  GraphNode a = new GraphNode("a");
-  GraphNode b = new GraphNode("b");
-  GraphNode c = new GraphNode("c");
-  GraphNode d = new GraphNode("d");
-  GraphNode e = new GraphNode("e");
-  GraphNode g = new GraphNode("g");
-  g.setFinal();
-  
-  s.ConnectTo(a,3);
-  s.ConnectTo(b,2);
-  
-  a.ConnectTo(c,3);
-  b.ConnectTo(c,5);
-  
-  c.ConnectTo(d,7);
-  c.ConnectTo(e,3);
-  
-  d.ConnectTo(e,4);
-  d.ConnectTo(g,3);
-  
-  e.ConnectTo(g,3);
-  
-  s.Heuristic=0;
-  a.Heuristic=5;
-  b.Heuristic=10;
-  c.Heuristic=3;
-  d.Heuristic=3;
-  e.Heuristic=7;
-  g.Heuristic=0;  
-  
-  CU_Graph.setInitialState(s);
-  CU_Graph.setFinalState(g);
-  
-  CU_Graph.NodesCollecion.add(s);
-  CU_Graph.NodesCollecion.add(a);
-  CU_Graph.NodesCollecion.add(b);
-  CU_Graph.NodesCollecion.add(c);
-  CU_Graph.NodesCollecion.add(d);
-  CU_Graph.NodesCollecion.add(e);
-  CU_Graph.NodesCollecion.add(g);
-  
-  print("Costo Uniforme");
-  SearchAlgorithms.UniFormCost(CU_Graph);
-  print("A Estrella");
-  SearchAlgorithms.AStar(CU_Graph);
-  print("Primero el mejor");
-  SearchAlgorithms.FirstBest(CU_Graph);
-  print("Primero en Anchura");
-  SearchAlgorithms.FirstWide(CU_Graph);
-  print("Primer en Profundidad");
-  SearchAlgorithms.FirstDeep(CU_Graph);
-}
+  void processGraph(DrawGraph GraphN){
+    
+  }
 
+  void main() {
+    CanvasElement canvas = document.query("#canvas");
+    CanvasRenderingContext2D ctx = canvas.getContext("2d");
+    DrawGraph GraphN = new DrawGraph();
+    var alpth = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","v","w","x","y","z"];
+    int it = 0;
+    
+    /*Set function to Controls*/
+    document.query("#add").on.click.add(function(e){
+      GraphN.SetAdd();
+      GraphN.ClearNodeSelection();
+      GraphN.ClearAristesSelection();
+    });
+    document.query("#join").on.click.add(function(e){
+      GraphN.SetJoin();
+      GraphN.ClearNodeSelection();
+      GraphN.ClearAristesSelection();
+    }); 
+    document.query("#move").on.click.add(function(e){
+      GraphN.SetMove();
+      GraphN.ClearNodeSelection();
+      GraphN.ClearAristesSelection();
+    });    
+    document.query("#remove").on.click.add(function(e){
+      GraphN.SetRemove();
+      GraphN.ClearNodeSelection();
+      GraphN.ClearAristesSelection();
+    });
+    document.query("#select").on.click.add(function(e){
+      GraphN.SetSelect();
+      GraphN.ClearNodeSelection();
+      GraphN.ClearAristesSelection();
+    });    
+    /*********************/
+    
+    /*Set Function to Keypress*/
+    document.on.keyPress.add(function(e){
+      if (GraphN.IsSelect){
+        if (GraphN.GetSelectedNodes().length == 1){
+          //GraphN.CurrentSelectedNode.h = 50;
+        }
+      }
+    });
+    canvas.on.click.add(function(e){
+      if (GraphN.IsSelect){
+        try{
+          GraphN.CurrentSelectedNode.isSelected = false;
+        }
+        catch( var ex){
+          
+        }
+        
+        if (GraphN.HasNodeClick(e.offsetX, e.offsetY)){
+          
+        }
+        GraphN.Draw(ctx);
+      }
+    });    
+    
+    /*Set function to Move*/
+    canvas.on.mouseMove.add(function(e){
+      if (GraphN.IsMove){
+        List<DrawNode> SelectedNodes = GraphN.GetSelectedNodes();
+        if (SelectedNodes.length == 1)
+        {
+          SelectedNodes[0].cx = e.offsetX;
+          SelectedNodes[0].cy = e.offsetY;
+        }
+        GraphN.Draw(ctx);
+      }
+    });
+    canvas.on.mouseDown.add(function(e){
+      if (GraphN.IsMove){
+        if (GraphN.HasNodeClick(e.offsetX, e.offsetY)){
+          GraphN.Draw(ctx);
+        }
+      }
+    });
+    canvas.on.mouseUp.add(function(e){
+      if (GraphN.IsMove){
+        GraphN.ClearNodeSelection();
+        GraphN.Draw(ctx);
+      }
+    });    
+    /**********************/
+    
+    /*Set function to Remove*/
+    canvas.on.click.add(function(e){
+      if (GraphN.IsRemove){
+        if (GraphN.HasNodeClick(e.offsetX, e.offsetY)){
+          List<int> SelectedNodesID = GraphN.GetSelectedNodesID();
+          
+          GraphN.BlockConnectedAristes(GraphN.GetSelectedNodes()[0]);
+          GraphN.Nodes.removeRange(SelectedNodesID[0],1);
+          
+          GraphN.ClearNodeSelection();
+          GraphN.ClearAristesSelection();
+          GraphN.Draw(ctx);
+        }
+        else if (GraphN.HasAristeClick(e.offsetX, e.offsetY)){
+          GraphN.BlockSelectedAristes();
+          GraphN.ClearNodeSelection();
+          GraphN.ClearAristesSelection();
+          GraphN.Draw(ctx);          
+        }
+        
+        GraphN.Nodes[0].isInitial = true;
+        GraphN.Nodes.last().isLast = false;
+        GraphN.Nodes[GraphN.Nodes.length-1].isLast = true;
+      }
+    });
+    /***********************/
+    
+    /*Set function to Add*/
+    canvas.on.click.add(function(e){
+      if (GraphN.IsAdd)
+      {
+        if (!GraphN.HasNodeClick(e.offsetX, e.offsetY)){
+          DrawNode newNode = new DrawNode(e.offsetX,e.offsetY,alpth[it],0);
+          GraphN.AddNewNode(newNode);
+          it++;
+        }
+        else
+        {
+          GraphN.ClearNodeSelection();
+        }
+        GraphN.Draw(ctx);
+      }
+    });
+    /*****************/
+    
+    /*Set function to Join*/
+    canvas.on.click.add(function(e){
+      if (GraphN.IsJoin)
+      {
+        if (GraphN.HasNodeClick(e.offsetX,e.offsetY)){
+          List<DrawNode> SelectedNodes = GraphN.GetSelectedNodes();
+          if (SelectedNodes.length == 2){
+            GraphN.Aristes.add(new DrawAriste(SelectedNodes[0],SelectedNodes[1],0));
+            GraphN.ClearNodeSelection();
+          }
+        }
+        GraphN.Draw(ctx);
+      }
+    });    
+    /*******************/
+  }

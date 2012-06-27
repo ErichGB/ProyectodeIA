@@ -118,7 +118,32 @@ class DrawUtils {
       }
   }    
   
-  static void DrawLine(CanvasRenderingContext2D context,int x1, int y1, int x2, int y2){
+  static void DrawLabel(CanvasRenderingContext2D context,double x, double y, String label){
+    context.beginPath();
+    context.fillStyle="rgb(225,225,225)";
+    context.strokeStyle="rgb(225,225,225)";
+    context.arc(x,y,15,0,Math.PI*2,true);
+    context.closePath();
+    context.fill();    
+    
+    context.beginPath();
+    context.fillStyle="rgb(0,0,0)";
+    context.strokeStyle="rgb(0,0,0)";
+    context.arc(x,y,15,0,Math.PI*2,true);
+    context.closePath();
+    context.fill();
+    context.beginPath();
+    context.fillStyle="rgb(225,225,225)";
+    context.arc(x,y,13,0,Math.PI*2,true);
+    context.closePath();
+    context.fill();      
+    
+    context.fillStyle='#000000';
+    context.font='bold 12px sans-serif';
+    context.fillText(label, x-6, y+6);    
+  }
+  
+  static void DrawLine(CanvasRenderingContext2D context,int x1, int y1, int x2, int y2, bool isSelected){
   Math math = new Math();
   
   double fixedX1;
@@ -164,24 +189,85 @@ class DrawUtils {
   context.beginPath();
   context.fillStyle="rgb(0,0,0)";
   context.strokeStyle="rgb(0,0,0)";
+
   context.arc((x1+x2)/2,(y1+y2)/2,15,0,Math.PI*2,true);
   context.closePath();
   context.fill();
   context.beginPath();
-  context.fillStyle="rgb(225,225,225)";
+  if (!isSelected){
+    context.fillStyle="rgb(225,225,225)";
+  }
+  else{
+    context.fillStyle="rgb(200,100,100)";
+  }
   context.arc((x1+x2)/2,(y1+y2)/2,13,0,Math.PI*2,true);
   context.closePath();
   context.fill();      
   }
   
-  static void DrawNode(CanvasRenderingContext2D context,int x, int y, String label,String heuristic){
+  
+  static void DrawInitialNode(CanvasRenderingContext2D context,int x, int y, String label,String heuristic,bool isSelected){
+  context.fillStyle='rgb(200,200,0)';
+  context.beginPath();
+  context.arc(x,y,20,0,Math.PI*2,true);
+  context.closePath();
+  context.fill();
+  if (isSelected)
+    context.strokeStyle='#AAAAAA';
+  else
+    context.strokeStyle='#0B173B';
+  context.lineWidth=4;
+  context.beginPath();
+  context.arc(x,y,20,0,Math.PI*2,true);
+  context.closePath();
+  context.stroke();
+  
+  context.fillStyle='#000000';
+  context.font='bold 30px sans-serif';
+  context.fillText(label, x-11, y+8);
+  
+  context.fillStyle='#0000FF';
+  context.font='bold 20px sans-serif';
+  context.fillText(heuristic, x-16, y-27);      
+  }   
+  
+  static void DrawFinalNode(CanvasRenderingContext2D context,int x, int y, String label,String heuristic,bool isSelected){
+  context.fillStyle='rgb(0,255,0)';
+  context.beginPath();
+  context.arc(x,y,20,0,Math.PI*2,true);
+  context.closePath();
+  context.fill();
+  
+  if (isSelected)
+    context.strokeStyle='#AAAAAA';
+  else
+    context.strokeStyle='#0B173B';
+  context.lineWidth=4;
+  context.beginPath();
+  context.arc(x,y,20,0,Math.PI*2,true);
+  context.closePath();
+  context.stroke();
+  
+  context.fillStyle='#000000';
+  context.font='bold 30px sans-serif';
+  context.fillText(label, x-11, y+8);
+  
+  context.fillStyle='#0000FF';
+  context.font='bold 20px sans-serif';
+  context.fillText(heuristic, x-16, y-27);      
+  }   
+  
+  static void DrawNode(CanvasRenderingContext2D context,int x, int y, String label,String heuristic,bool isSelected){
   context.fillStyle='#FF0000';
   context.beginPath();
   context.arc(x,y,20,0,Math.PI*2,true);
   context.closePath();
   context.fill();
   
-  context.strokeStyle='#0B173B';
+  if (isSelected)
+    context.strokeStyle='#AAAAAA';
+  else
+    context.strokeStyle='#0B173B';
   context.lineWidth=4;
   context.beginPath();
   context.arc(x,y,20,0,Math.PI*2,true);
