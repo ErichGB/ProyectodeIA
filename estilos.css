@@ -16,27 +16,26 @@ body{
 
 #tools{
 	background-color: #DDD;
+	/*border: 1px solid #999;*/
 	display: inline-block;
 	float: left;
-	height: 498px;
+	height: 500px;
 	vertical-align: top;
 	width: 120px;
-	border: 1px solid #999;
 }
 
 #tools ul{
 	height: 100%;
 }
 
-#tools li{
+#tools li input{
 	display: block;
-	width: 80%;
-	height:15%;
+	width: 85%;
 	border: 2px solid #666;
 	margin: 8px auto;
 	border-radius: 8px;
-	font-size: 13px;
-	text-align: bottom;
+	font-size: 12px;
+	text-align: center;
 	font-weight: bold;
 	-webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -44,98 +43,156 @@ body{
         -ms-user-select: none;
          -o-user-select: none;
             user-select: none;
-
-    cursor: pointer;
     box-shadow: 0px 3px 3px rgba(50, 50, 50, 0.75);
+    padding-bottom: 60px; 
+ 	background-color: transparent;
+ 	height: 80px;
 }
 
-.crear{
+#add{
 	background-image: url("img/crear.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-.crear:hover{
+#add:hover{
 	background-image: url("img/crearactive.png");
 	background-color: rgba(0,0,0, 0.2);
 	color: #FFF;
 }
 
-.crear:active{
+#add:active{
 	background-image: url("img/crearactive.png");
 	background-color: rgba(0,0,0, 0.6);
 	color: #FFF;
 }
 
-.borrar{
+#remove{
 	background-image: url("img/eliminar.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-.borrar:hover{
+#remove:hover{
 	background-image: url("img/eliminaractive.png");
 	background-color: rgba(0,0,0, 0.2);
 	color: #FFF;
 }
 
-.borrar:active{
+#remove:active{
 	background-image: url("img/eliminaractive.png");
 	background-color: rgba(0,0,0, 0.6);
 	color: #FFF;
 }
 
-.mover{
+#move{
 	background-image: url("img/move.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-.mover:hover{
+#move:hover{
 	background-image: url("img/moveactive.png");
 	background-color: rgba(0,0,0, 0.2);
 	color: #FFF;
 }
 
-.mover:active{
+#move:active{
 	background-image: url("img/moveactive.png");
 	background-color: rgba(0,0,0, 0.6);
 	color: #FFF;
 }
 
-.unir{
+#join{
 	background-image: url("img/line.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-.unir:hover{
+#join:hover{
 	background-image: url("img/lineactive.png");
 	background-color: rgba(0,0,0, 0.2);
 	color: #FFF;
 }
 
-.unir:active{
+#join:active{
 	background-image: url("img/lineactive.png");
 	background-color: rgba(0,0,0, 0.6);
 	color: #FFF;
 }
 
-#workspace{
+#select{
+	background-image: url("img/cursor.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+#select:hover{
+	background-image: url("img/cursoractive.png");
+	background-color: rgba(0,0,0, 0.2);
+	color: #FFF;
+}
+
+
+#canvas{
 	background-color: rgba(255,255,255, .8);
+    border: 3px solid rgba(255,0,0,.75);
     display: inline-block;
-    height: 500px;
-    width: 980px;
     float: left;
-    border-right: 1px solid #999;
 }
 
 #solution{
-	background-color: #BBB;
-	display: inline-block;
-	height: 200px;
-	width: 1100px;
-	min-width: 900px;
-	float: left;
+	background-color: #DDD;
 	border: 1px solid #999;
+	display: inline-block;
+	float: left;
+	height: 500px;
+	position: relative;
+	width: 560px;
+}
+
+
+.tabs li{
+	display: inline-block;
+	margin-top: 1em;
+}
+
+.tabs li a{
+	color: #eee;
+	background-color: #AAA;
+	padding: .5em;
+	border: 2px solid #AAA;
+	border-radius: 8px 8px 0 0;
+}
+
+.tabs li a:hover{
+	background-color: #666;
+	color: #fff;
+}
+
+li.active a{
+	background-color: #666;
+	color: #fff;
+	border-color:#FFF;
+}
+
+.tab_content{
+	width: 490px;
+	height: 400px;
+	background-color: rgba(255,255,255,.9);
+	display: inline-block;
+	margin-top: .5em;
+}
+
+#process{
+	background-image: url("img/play.png");
+    background-position: left center;
+    background-repeat: no-repeat;
+    bottom: 1em;
+    left: 2.5em;
+    position: absolute;
+    padding: 5px 5px 5px 30px;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: right;
 }

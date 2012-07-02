@@ -3,23 +3,75 @@
 <head>
 	<meta charset="UTF-8" />
 	<link rel="stylesheet" type="text/css" href="estilos.css">
+    <script type="text/javascript" src="jquery.min.js">
+</script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+    //When page loads...
+    $(".tab_content").hide(); //Hide all content
+    //$("ul.tabs li:first").addClass("active").show(); //Activate first tab
+    //$(".tab_content:first").show(); //Show first tab content
+    //On Click Event
+    $("ul.tabs li").click(function() {
+
+        jQuery("ul.tabs li").removeClass("active"); // Remove any "active" clas
+        jQuery(this).addClass("active"); //Add "active" class to selected tab
+        jQuery(".tab_content").hide(); //Hide all tab content
+
+        var activeTab = jQuery(this).find("a").attr("href"); //Find the href attribute value to
+                // identify the active tab + content
+        jQuery(activeTab).fadeIn(); //Fade in the active ID content
+        return false;
+    });
+});
+    </script>
+
 	<title>Herramientas web para la resolución de algoritmos de búsquedas</title>
 </head>
 <body>
     <section id="tools">
-    	<ul>
-    		<li class="crear" >Crear Nodo</li>
-    		<li class="borrar" >Borrar Nodo</li>
-    		<li class="mover" >Mover Nodos</li>
-    		<li class="unir" >Unir Nodos</li>
-            
-    	</ul>	
+        <ul>
+            <li><input type="button" value="Crear Nodo"  id="add"/>   </li>
+            <li><input type="button" value="Borrar Nodo" id="remove"/></li>
+            <li><input type="button" value="Mover Nodos" id="move"/>  </li>
+            <li><input type="button" value="Unir Nodos"  id="join"/>  </li>
+            <li><input type="button" value="Seleccionar" id="select"/></li>
+        </ul>   
     </section>
 
-    <section id="workspace">
-    </section>
+    <script src="dart.js"></script>
+    <script type="application/dart" src="AIProyect.dart"></script>
+    <canvas id="canvas" width="660" height="495"></canvas>
+    <div id="coords"></div>
 
     <section id="solution">
+        <ul class="tabs">
+            <li><a href="#AE">A-Estrella</a></li>
+            <li><a href="#CU">Costo Unif.</a></li>
+            <li><a href="#PM">Primero M.</a></li>
+            <li><a href="#PA">Primero A.</a></li>
+            <li><a href="#PP">Primero P.</a></li>
+        </ul>
+
+        <div class="tab_content"  id="AE">
+            <p>a estrella</p>
+        </div>
+        <div class="tab_content"  id="CU">
+            <p>cos uniforme</p>
+        </div>
+        <div class="tab_content"  id="PM">
+            <p>primero el mejor</p>
+        </div>
+        <div class="tab_content"  id="PA">
+            <p>primero anchura</p>
+        </div>
+        <div class="tab_content"  id="PP">
+            <p>primero profundidad</p>
+        </div>
+
+        <input type="button" value="Procesar" id="process" />
+
     </section>
     
 </body>
