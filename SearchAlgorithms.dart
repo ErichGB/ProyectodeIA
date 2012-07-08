@@ -3,7 +3,7 @@
 #import('dart:core');
 
 class CommonUtils {
-  static List<Object> Revert(List<Object> RList){
+  static Revert(List<Object> RList){
     List<Object> TempList = new List<Object>();
     for (int i=RList.length-1; i>=0; i--){
       TempList.add(RList[i]);
@@ -160,30 +160,47 @@ class PathRow{
       s = s.concat(Paths[i].GetAbsolutePath());
     }
     print(s);
-  }   
+  }
   
-  PrintHeuristic(){
+  String GetPathStr(){
+    String s="";
+    for(var i=0; i<this.Paths.length; i++){
+      s = s.concat(Paths[i].GetAbsolutePath());
+    }
+    return s; 
+  }
+  
+  PrintHeuristic([bool returnString=false]){
     String s="";
     for(var i=0; i<this.Paths.length; i++){
       s = s.concat(Paths[i].GetStrHeuristic());
     }
-    print(s);
+    if (returnString)
+      return s;
+    else
+      print(s);
   }    
   
-  PrintHeuristicPaths(){
+  PrintHeuristicPaths([bool returnString=false]){
     String s="";
     for(var i=0; i<this.Paths.length; i++){
       s = s.concat(Paths[i].GetStrHeuristicPath());
     }
-    print(s);
+    if (returnString)
+      return s;
+    else
+      print(s);
   }  
   
-  PrintPaths(){
+  PrintPaths([bool returnString=false]){
     String s="";
     for(var i=0; i<this.Paths.length; i++){
       s = s.concat(Paths[i].GetStrPath());
     }
-    print(s);
+    if (returnString)
+      return s;
+    else
+      print(s);
   }
   
   Path GetLastPath(){
@@ -223,13 +240,12 @@ class PathRow{
   Path GetLowestHeuristic(){
     int LowestVal;
     Path LowestPath = this.Paths[0];
-    LowestVal = 0;
+    LowestVal = LowestPath.getHeuristic();
     
     for (var i=1; i<Paths.length; i++){
         if ((Paths[i].getHeuristic())<=LowestVal)
           LowestPath = Paths[i];
     }
-    
     return LowestPath;    
   }  
 }
@@ -271,14 +287,16 @@ class Graph {
 
 class SearchAlgorithms{
   
-  static FirstWide(Graph GraphToProcess){
+  static String FirstWide(Graph GraphToProcess){
+    String ResultTable = "";
+    
     PathTable CU_QTable = new PathTable();
     PathRow InitialRow = new PathRow();
     Path InitialPath = new Path();
     InitialPath.AddNode(GraphToProcess.InitialState);
     InitialPath.Value = 0;
     InitialRow.AddPath(InitialPath);
-    InitialRow.Print();
+    ResultTable = ResultTable.concat("<div class='pathrow'>${InitialRow.GetPathStr()}</div>");
     CU_QTable.AddRow(InitialRow);
     
     PathRow TempRow;
@@ -295,20 +313,23 @@ class SearchAlgorithms{
       TempList.addAll(TempRow.GetUnexpandedPaths());
       TempList.addAll(NewRow.Paths);
       NewRow.Paths = TempList;
-      //NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
       CU_QTable.AddRow(NewRow);
-      NewRow.Print();
-    }while(true);  
+      ResultTable = ResultTable.concat("<div class='pathrow'>${NewRow.GetPathStr()}</div>");
+    }while(true);
+    
+    return "<div class='pathtable'>$ResultTable</div>";
   }
   
-  static FirstDeep(Graph GraphToProcess){
+  static String FirstDeep(Graph GraphToProcess){
+    String ResultTable = "";
+    
     PathTable CU_QTable = new PathTable();
     PathRow InitialRow = new PathRow();
     Path InitialPath = new Path();
     InitialPath.AddNode(GraphToProcess.InitialState);
     InitialPath.Value = 0;
     InitialRow.AddPath(InitialPath);
-    InitialRow.Print();
+    ResultTable = ResultTable.concat("<div class='pathrow'>${InitialRow.GetPathStr()}</div>");
     CU_QTable.AddRow(InitialRow);
     
     PathRow TempRow;
@@ -325,20 +346,23 @@ class SearchAlgorithms{
       TempList.addAll(NewRow.Paths);
       TempList.addAll(TempRow.GetUnexpandedPaths());
       NewRow.Paths = TempList;
-      //NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
       CU_QTable.AddRow(NewRow);
-      NewRow.Print();
-    }while(true);    
+      ResultTable = ResultTable.concat("<div class='pathrow'>${NewRow.GetPathStr()}</div>");
+    }while(true);
+    
+    return "<div class='pathtable'>$ResultTable</div>";
   }
   
-  static FirstBest(Graph GraphToProcess){
+  static String FirstBest(Graph GraphToProcess){
+    String ResultTable = "";
+    
     PathTable CU_QTable = new PathTable();
     PathRow InitialRow = new PathRow();
     Path InitialPath = new Path();
     InitialPath.AddNode(GraphToProcess.InitialState);
     InitialPath.Value = 0;
     InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
+    ResultTable =  ResultTable.concat("<div class='pathrow'>${InitialRow.PrintPaths(true)}</div>");
     CU_QTable.AddRow(InitialRow);
     
     PathRow TempRow;
@@ -353,11 +377,14 @@ class SearchAlgorithms{
       }
       NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
       CU_QTable.AddRow(NewRow);
-      NewRow.PrintHeuristic();
+      ResultTable =  ResultTable.concat("<div class='pathrow'>${NewRow.PrintHeuristic(true)}</div>");
     }while(true);
+    
+    return "<div class='pathtable'>$ResultTable</div>";
   }
   
-  static UniFormCost(Graph GraphToProcess){
+  static String UniFormCost(Graph GraphToProcess){
+    String ResultTable = "";
     
     PathTable CU_QTable = new PathTable();
     PathRow InitialRow = new PathRow();
@@ -365,7 +392,7 @@ class SearchAlgorithms{
     InitialPath.AddNode(GraphToProcess.InitialState);
     InitialPath.Value = 0;
     InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
+    ResultTable = ResultTable.concat("<div class='pathrow'>${InitialRow.PrintPaths(true)}</div>");
     CU_QTable.AddRow(InitialRow);
     
     PathRow TempRow;
@@ -380,12 +407,14 @@ class SearchAlgorithms{
       }
       NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
       CU_QTable.AddRow(NewRow);
-      NewRow.PrintPaths();
+      ResultTable = ResultTable.concat("<div class='pathrow'>${NewRow.PrintPaths(true)}</div>");
     }while(true); 
     
+    return "<div class='pathtable'>$ResultTable</div>";;
   }
   
-  static AStar(Graph GraphToProcess){
+  static String AStar(Graph GraphToProcess){
+    String ResultTable = "";
     
     PathTable CU_QTable = new PathTable();
     PathRow InitialRow = new PathRow();
@@ -393,7 +422,7 @@ class SearchAlgorithms{
     InitialPath.AddNode(GraphToProcess.InitialState);
     InitialPath.Value = 0;
     InitialRow.AddPath(InitialPath);
-    InitialRow.PrintPaths();
+    ResultTable = ResultTable.concat("<div class='pathrow'>${InitialRow.PrintPaths(true)}</div>");
     CU_QTable.AddRow(InitialRow);
     
     PathRow TempRow;
@@ -408,66 +437,9 @@ class SearchAlgorithms{
       }
       NewRow.Paths.addAll(TempRow.GetUnexpandedPaths());
       CU_QTable.AddRow(NewRow);
-      NewRow.PrintHeuristicPaths();
+      ResultTable = ResultTable.concat("<div class='pathrow'>${NewRow.PrintHeuristicPaths(true)}</div>");
     }while(true); 
     
+    return "<div class='pathtable'>$ResultTable</div>";
   }  
 }
-
-/*void main() {
-  Graph CU_Graph = new Graph(); 
-  
-  GraphNode s = new GraphNode("s");
-  GraphNode a = new GraphNode("a");
-  GraphNode b = new GraphNode("b");
-  GraphNode c = new GraphNode("c");
-  GraphNode d = new GraphNode("d");
-  GraphNode e = new GraphNode("e");
-  GraphNode g = new GraphNode("g");
-  g.setFinal();
-  
-  s.ConnectTo(a,3);
-  s.ConnectTo(b,2);
-  
-  a.ConnectTo(c,3);
-  b.ConnectTo(c,5);
-  
-  c.ConnectTo(d,7);
-  c.ConnectTo(e,3);
-  
-  d.ConnectTo(e,4);
-  d.ConnectTo(g,3);
-  
-  e.ConnectTo(g,3);
-  
-  s.Heuristic=0;
-  a.Heuristic=5;
-  b.Heuristic=10;
-  c.Heuristic=3;
-  d.Heuristic=3;
-  e.Heuristic=7;
-  g.Heuristic=0;  
-  
-  CU_Graph.setInitialState(s);
-  CU_Graph.setFinalState(g);
-  
-  CU_Graph.NodesCollecion.add(s);
-  CU_Graph.NodesCollecion.add(a);
-  CU_Graph.NodesCollecion.add(b);
-  CU_Graph.NodesCollecion.add(c);
-  CU_Graph.NodesCollecion.add(d);
-  CU_Graph.NodesCollecion.add(e);
-  CU_Graph.NodesCollecion.add(g);
-  
-  print("Costo Uniforme");
-  SearchAlgorithms.UniFormCost(CU_Graph);
-  print("A Estrella");
-  SearchAlgorithms.AStar(CU_Graph);
-  print("Primero el mejor");
-  SearchAlgorithms.FirstBest(CU_Graph);
-  print("Primero en Anchura");
-  SearchAlgorithms.FirstWide(CU_Graph);
-  print("Primer en Profundidad");
-  SearchAlgorithms.FirstDeep(CU_Graph);
-}*/
-

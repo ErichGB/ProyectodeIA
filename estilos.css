@@ -45,100 +45,128 @@ body{
             user-select: none;
     box-shadow: 0px 3px 3px rgba(50, 50, 50, 0.75);
     padding-bottom: 60px; 
- 	background-color: transparent;
+ 	/*background-color: transparent;*/
  	height: 80px;
 }
 
-#add{
+.add{
 	background-image: url("img/crear.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-#add:hover{
+.add:hover{
 	background-image: url("img/crearactive.png");
-	background-color: rgba(0,0,0, 0.2);
+	background-color: #AAA;
 	color: #FFF;
 }
 
-#add:active{
+.addactive{
 	background-image: url("img/crearactive.png");
-	background-color: rgba(0,0,0, 0.6);
+	background-color: #666;
 	color: #FFF;
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 
-#remove{
+.remove{
 	background-image: url("img/eliminar.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-#remove:hover{
+.remove:hover{
 	background-image: url("img/eliminaractive.png");
-	background-color: rgba(0,0,0, 0.2);
+	background-color: #AAA;
 	color: #FFF;
 }
 
-#remove:active{
+.removeactive{
 	background-image: url("img/eliminaractive.png");
-	background-color: rgba(0,0,0, 0.6);
+	background-color: #666;
 	color: #FFF;
 }
 
-#move{
+.move{
 	background-image: url("img/move.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-#move:hover{
+.move:hover{
 	background-image: url("img/moveactive.png");
-	background-color: rgba(0,0,0, 0.2);
+	background-color: #AAA;
 	color: #FFF;
 }
 
-#move:active{
+.moveactive{
 	background-image: url("img/moveactive.png");
-	background-color: rgba(0,0,0, 0.6);
+	background-color: #666;
 	color: #FFF;
 }
 
-#join{
+.join{
 	background-image: url("img/line.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-#join:hover{
+.join:hover{
 	background-image: url("img/lineactive.png");
-	background-color: rgba(0,0,0, 0.2);
+	background-color: #AAA;
 	color: #FFF;
 }
 
-#join:active{
+.joinactive{
 	background-image: url("img/lineactive.png");
-	background-color: rgba(0,0,0, 0.6);
-	color: #FFF;
+	background-color: #666;
+	color: #FFF
 }
 
-#select{
+.select{
 	background-image: url("img/cursor.png");
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
-#select:hover{
+.select:hover{
 	background-image: url("img/cursoractive.png");
-	background-color: rgba(0,0,0, 0.2);
+	background-color: #AAA;
 	color: #FFF;
 }
 
+.selectactive{
+	background-image: url("img/cursoractive.png");
+	background-color: #666;
+	color: #FFF;
+	cursor: url("img/cursoractive.png");
+}
 
 #canvas{
 	background-color: rgba(255,255,255, .8);
     border: 3px solid rgba(255,0,0,.75);
     display: inline-block;
     float: left;
+}
+
+.addpointer{
+	cursor: url("img/pointercrear.png"), pointer;
+}
+
+.removepointer{
+	cursor: url("img/pointereliminar.png"), pointer;
+}
+
+.movepointer{
+	cursor: move;
+}
+
+.joinpointer{
+	cursor: crosshair;
+}
+
+.selectpointer{
+	cursor: default;
 }
 
 #solution{
@@ -150,7 +178,6 @@ body{
 	position: relative;
 	width: 560px;
 }
-
 
 .tabs li{
 	display: inline-block;

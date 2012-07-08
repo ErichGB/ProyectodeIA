@@ -7,7 +7,9 @@
   class DrawGraph{
     List<DrawNode> Nodes;
     List<DrawAriste> Aristes;
-    DrawNode CurrentSelectedNode;
+    
+    DrawNode CurrentSelecteNode;
+    DrawAriste CurrentSelectAriste;
     
     bool IsAdd = true;
     bool IsJoin = false;
@@ -83,7 +85,21 @@
       return SelectedNodesID;      
     }
     
-    GetSelectedNodes(){
+    List<DrawAriste> GetSelectedAristes(){
+      int aristeCount = this.Aristes.length;
+      List<DrawAriste> SelectedAristes;
+      
+      SelectedAristes = new List<DrawAriste>();
+      for (int i=0; i<aristeCount; i++){
+        if (this.Aristes[i].IsSelected){
+          SelectedAristes.add(this.Aristes[i]);
+        }
+      }
+      
+      return SelectedAristes;      
+    }
+    
+    List<DrawNode> GetSelectedNodes(){
       int nodeCount = this.Nodes.length;
       List<DrawNode> SelectedNodes;
       
@@ -107,8 +123,10 @@
     
     HasAristeClick(int x, int y){
       int aristeCount = this.Aristes.length;
-      for (int i=0; i<aristeCount; i++){
-        if (this.Aristes[i].IsInside(x, y)){
+      for (int i=0; i<aristeCount; i++)
+      {
+        if (this.Aristes[i].IsInside(x, y))
+        {
           if (this.Aristes[i].IsSelected == true)
           {
             this.Aristes[i].IsSelected = false;
@@ -123,10 +141,13 @@
       return false;        
     }
     
-    HasNodeClick(int x, int y){
+    HasNodeClick(int x, int y)
+    {
       int nodeCount = this.Nodes.length;
-      for (int i=0; i<nodeCount; i++){
-        if (this.Nodes[i].IsInside(x, y)){
+      for (int i=0; i<nodeCount; i++)
+      {
+        if (this.Nodes[i].IsInside(x, y))
+        {
           if (this.Nodes[i].isSelected == true)
           {
             this.Nodes[i].isSelected = false;
@@ -134,7 +155,6 @@
           else
           {
             this.Nodes[i].isSelected = true;
-            this.CurrentSelectedNode = this.Nodes[i];            
           }
           return true;
         }
@@ -144,14 +164,16 @@
     
     AddNewNode(DrawNode node)
     {
-      if (this.Nodes.length >0 ){ 
+      if (this.Nodes.length >0 )
+      { 
         this.Nodes[0].isInitial = true;
         this.Nodes.last().isLast = false;
       }
       this.Nodes.add(node);
     }
     
-    Draw(CanvasRenderingContext2D ctx){
+    Draw(CanvasRenderingContext2D ctx)
+    {
       ctx.clearRect(0, 0, 600, 400);
       this.Nodes.forEach((node) => node.Draw(ctx));
       this.Aristes.forEach((ariste) => ariste.Draw(ctx));
@@ -169,7 +191,8 @@
           ){
         return true;
         }
-        else{
+        else
+        {
         return false;
         }
     }    
@@ -182,27 +205,70 @@
     bool IsSelected=false;
     bool IsBlocked = false;
     
-    Block(){
+    String StrVal = "";
+    String StrV0 = "";
+    String StrV1 = "";
+    int d = 0;    
+    
+    Block()
+    {
       this.IsBlocked = true;
       this.cx = -10;
       this.cy = -10;
     }
     
-    bool IsConnectedTo(DrawNode node){
-      if ((node.isSame(initialN)) || (node.isSame(finalN))){
+    SetJoin(){
+      this.initialN.node.ConnectTo(this.finalN.node, this.val);
+    }
+    
+    SetValue(int charCode){
+      String str = new String.fromCharCodes([charCode]);
+      
+      if (d==0){
+        StrV0 = str;
+        d = 1;
+      }
+      else if (d==1){
+        StrV1 = str;
+        d = 0;
+      }
+      
+      StrVal = "${StrV0}${StrV1}";
+      this.val = Math.parseInt(this.StrVal);
+    }    
+    
+    bool isSame(DrawAriste ariste){
+      if ((ariste.initialN.isSame(this.initialN)) &&
+      (ariste.finalN.isSame(this.finalN)))
+      {
         return true;
       }
-      else{
+      else 
+      {
         return false;
       }
     }
     
-    RecalculateAriste(){
+    bool IsConnectedTo(DrawNode node)
+    {
+      if ((node.isSame(initialN)) || (node.isSame(finalN)))
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    
+    RecalculateAriste()
+    {
       this.cx = ((this.initialN.cx + this.finalN.cx) / 2).toInt();
       this.cy = ((this.initialN.cy + this.finalN.cy) / 2).toInt();      
     }
     
-    DrawAriste(DrawNode initialNode , DrawNode finalNode, int value){
+    DrawAriste(DrawNode initialNode , DrawNode finalNode, int value)
+    {
       this.initialN = initialNode;
       this.finalN = finalNode;
       this.cx = ((this.initialN.cx + this.finalN.cx) / 2).toInt();
@@ -211,23 +277,34 @@
       this.size = 40;
     }
     
-    Draw(CanvasRenderingContext2D ctx){
-      if (!this.IsBlocked){
+    Draw(CanvasRenderingContext2D ctx)
+    {
+      if (!this.IsBlocked)
+      {
         this.RecalculateAriste();
       DrawUtils.DrawLine(ctx, this.initialN.cx,this.initialN.cy,this.finalN.cx ,this.finalN.cy,this.IsSelected);
+      DrawUtils.DrawLabel(ctx,  this.cx.toDouble() , this.cy.toDouble(), val.toString());
       }
     }
   }  
 
   class DrawNode extends SelectableShape{
     String val;
+    
     int h;
+    String StrHe = "";
+    String StrH0 = "";
+    String StrH1 = "";
+    int d = 0;
+    
     bool isLast = true;
     bool isInitial = false;
     bool isSelected = false;
     
-    isSame(DrawNode node){
-      return this.val == node.val;
+    GraphNode node;
+    
+    isSame(DrawNode nd){
+      return this.val == nd.val;
     }
         
     DrawNode(int x, int y, String value ,int heuristic){
@@ -238,7 +315,29 @@
       this.size = 40;
     }
     
-    Draw(CanvasRenderingContext2D ctx){
+    void SetNodeValue(){
+      this.node = new GraphNode(this.val.toString());
+      this.node.Heuristic = this.h;
+    }
+
+    SetHeuristicValue(int charCode){
+      String str = new String.fromCharCodes([charCode]);
+      
+      if (d==0){
+        StrH0 = str;
+        d = 1;
+      }
+      else if (d==1){
+        StrH1 = str;
+        d = 0;
+      }
+      
+      StrHe = "${StrH0}${StrH1}";
+      this.h = Math.parseInt(this.StrHe);
+    }
+    
+    Draw(CanvasRenderingContext2D ctx)
+    {
       if (this.isInitial)
         DrawUtils.DrawInitialNode(ctx, this.cx, this.cy, this.val,"${this.h}",isSelected);
       else if (this.isLast)
@@ -248,8 +347,32 @@
     }
   }
   
-  void processGraph(DrawGraph GraphN){
+  void ProcessGraph(DrawGraph graph){
+    Graph NodeGraph = new Graph(); 
     
+    for(int i=0; i<graph.Nodes.length; i++){
+      graph.Nodes[i].SetNodeValue();
+    }
+    
+    graph.Nodes.last().node.setFinal();
+    
+    for(int i=0; i<graph.Aristes.length; i++){
+      if (!graph.Aristes[i].IsBlocked)
+        graph.Aristes[i].SetJoin();
+    }
+    
+    for(int i=0; i<graph.Nodes.length; i++){
+      NodeGraph.NodesCollecion.add(graph.Nodes[i].node);
+    }    
+    
+    NodeGraph.setInitialState(graph.Nodes[0].node);
+    NodeGraph.setFinalState(graph.Nodes.last().node);
+
+    document.query("#first-deep").innerHTML = SearchAlgorithms.FirstDeep(NodeGraph);
+    document.query("#first-wide").innerHTML = SearchAlgorithms.FirstWide(NodeGraph);
+    document.query("#first-best").innerHTML = SearchAlgorithms.FirstBest(NodeGraph);
+    document.query("#uniform-cost").innerHTML = SearchAlgorithms.UniFormCost(NodeGraph);
+    document.query("#a-star").innerHTML = SearchAlgorithms.AStar(NodeGraph);
   }
 
   void main() {
@@ -287,29 +410,50 @@
     });    
     /*********************/
     
-    /*Set Function to Keypress*/
-    document.on.keyPress.add(function(e){
-      if (GraphN.IsSelect){
-        if (GraphN.GetSelectedNodes().length == 1){
-          //GraphN.CurrentSelectedNode.h = 50;
+    /*Set Function to process*/
+    document.query("#process").on.click.add(function(e){
+      ProcessGraph(GraphN);
+    });
+    /************************/
+    
+    /*Set Function to Select*/
+    document.on.keyPress.add(function(e)
+    {
+      if (GraphN.IsSelect)
+      {
+        if (GraphN.GetSelectedNodes().length == 1)
+        {
+          GraphN.GetSelectedNodes()[0].SetHeuristicValue(e.charCode);  
         }
+        else if (GraphN.GetSelectedAristes().length == 1)
+        {
+          GraphN.GetSelectedAristes()[0].SetValue(e.charCode); 
+        }
+        GraphN.Draw(ctx);
       }
     });
     canvas.on.click.add(function(e){
       if (GraphN.IsSelect){
-        try{
-          GraphN.CurrentSelectedNode.isSelected = false;
-        }
-        catch( var ex){
-          
-        }
-        
         if (GraphN.HasNodeClick(e.offsetX, e.offsetY)){
-          
+          GraphN.ClearNodeSelection();
+          GraphN.ClearAristesSelection();
+          GraphN.HasNodeClick(e.offsetX, e.offsetY);
+        }
+        else if (GraphN.HasAristeClick(e.offsetX, e.offsetY)){
+          GraphN.ClearNodeSelection();
+          GraphN.ClearAristesSelection();
+          GraphN.HasAristeClick(e.offsetX, e.offsetY);
+        }
+        else
+        {
+          GraphN.ClearNodeSelection();
+          GraphN.ClearAristesSelection();
         }
         GraphN.Draw(ctx);
       }
-    });    
+    });
+    /***************************/
+    
     
     /*Set function to Move*/
     canvas.on.mouseMove.add(function(e){
@@ -387,9 +531,11 @@
     canvas.on.click.add(function(e){
       if (GraphN.IsJoin)
       {
-        if (GraphN.HasNodeClick(e.offsetX,e.offsetY)){
+        if (GraphN.HasNodeClick(e.offsetX,e.offsetY))
+        {
           List<DrawNode> SelectedNodes = GraphN.GetSelectedNodes();
-          if (SelectedNodes.length == 2){
+          if (SelectedNodes.length == 2)
+          {
             GraphN.Aristes.add(new DrawAriste(SelectedNodes[0],SelectedNodes[1],0));
             GraphN.ClearNodeSelection();
           }

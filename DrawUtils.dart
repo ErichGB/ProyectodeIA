@@ -119,25 +119,6 @@ class DrawUtils {
   }    
   
   static void DrawLabel(CanvasRenderingContext2D context,double x, double y, String label){
-    context.beginPath();
-    context.fillStyle="rgb(225,225,225)";
-    context.strokeStyle="rgb(225,225,225)";
-    context.arc(x,y,15,0,Math.PI*2,true);
-    context.closePath();
-    context.fill();    
-    
-    context.beginPath();
-    context.fillStyle="rgb(0,0,0)";
-    context.strokeStyle="rgb(0,0,0)";
-    context.arc(x,y,15,0,Math.PI*2,true);
-    context.closePath();
-    context.fill();
-    context.beginPath();
-    context.fillStyle="rgb(225,225,225)";
-    context.arc(x,y,13,0,Math.PI*2,true);
-    context.closePath();
-    context.fill();      
-    
     context.fillStyle='#000000';
     context.font='bold 12px sans-serif';
     context.fillText(label, x-6, y+6);    
