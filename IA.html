@@ -8,7 +8,7 @@
     <script type="application/dart" src="AIProyect.dart"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-
+        $(".tab_content2").hide();
         //When page loads...
         $(".tab_content").hide(); //Hide all content
         //$("ul.tabs li:first").addClass("active").show(); //Activate first tab
@@ -26,6 +26,18 @@
                 return false;
             });
 
+            $("ul.tabs2 li").click(function() {
+
+                jQuery("ul.tabs2 li").removeClass("active"); // Remove any "active" clas
+                jQuery(this).addClass("active"); //Add "active" class to selected tab
+                jQuery(".tab_content2").hide(); //Hide all tab content
+
+                var activeTab = jQuery(this).find("a").attr("href"); //Find the href attribute value to
+                        // identify the active tab + content
+                jQuery(activeTab).fadeIn(); //Fade in the active ID content
+                return false;
+            });
+
             $("li input").click(function(){
                 jQuery("li input").each(function(){
                     jQuery(this).removeClass(jQuery(this).attr("id") + "active");
@@ -34,6 +46,7 @@
                 jQuery(this).addClass(jQuery(this).attr("id") + "active");
                 jQuery("canvas").removeClass();
                 jQuery("canvas").addClass(jQuery(this).attr("id") + "pointer");
+
             });
         });
 
@@ -43,12 +56,32 @@
 </head>
 <body>
     <section id="tools">
-        <ul>
-            <li><input type="button" value="Crear Nodo"  id="add" class="add"/></li>
-            <li><input type="button" value="Borrar Nodo" id="remove" class="remove"/></li>
-            <li><input type="button" value="Mover Nodos" id="move" class="move"/></li>
-            <li><input type="button" value="Unir Nodos"  id="join" class="join"/></li>
-            <li><input type="button" value="Seleccionar" id="select" class="select"/></li>
+        <ul class="tabs2">
+            <li>
+                <a href="#CN">
+                    <input type="button" value="Crear Nodo"  id="add" class="add addactive"/>
+                </a>
+            </li>
+            <li>
+                <a href="#BN">
+                    <input type="button" value="Borrar Nodo" id="remove" class="remove"/>
+                </a>
+            </li>
+            <li>
+                <a href="#MN">
+                    <input type="button" value="Mover Nodos" id="move" class="move"/>
+                </a>
+            </li>
+            <li>
+                <a href="#UN">
+                    <input type="button" value="Unir Nodos"  id="join" class="join"/>
+                </a>
+            </li>
+            <li>
+                <a href="#SE">
+                    <input type="button" value="Seleccionar" id="select" class="select"/>
+                </a>
+            </li>
         </ul>   
     </section>
 
@@ -82,6 +115,44 @@
 
         <input type="button" value="Procesar" id="process" />
 
+    </section>
+
+    <section id="help">
+        <div class="ayuda">
+
+            <div class="tab_content2" id="CN" style="width: 100%; height: 40%;" >
+                <p>ayuda de crear nuevo nodo</p>
+            </div>
+
+            <div class="tab_content2" id="BN" style="width: 100%; height: 40%;" >
+                <p>aydua de eliminar nodo</p>
+            </div>
+
+            <div class="tab_content2" id="MN" style="width: 100%; height: 40%;" >
+                <p>aydua de Mover nodo</p>
+            </div>
+
+            <div class="tab_content2" id="UN" style="width: 100%; height: 40%;" >
+                <p>aydua de Unir nodo</p>
+            </div>
+
+            <div class="tab_content2" id="SE" style="width: 100%; height: 40%;" >
+                <p>aydua de seleccionar nodo</p>
+            </div>
+
+        </div>
+
+        <div class="credito">
+            <p>
+                <strong>Autores:</strong> <br>
+                - Rainer Eli Rodriguez  <br>
+                - Erich González Berbis <br>
+                - Samuel Gutierrez      <br>
+                <br>
+                <strong>5t2-Co 2012</strong>
+                julio 2012
+            </p>
+        </div>
     </section>
     
 </body>

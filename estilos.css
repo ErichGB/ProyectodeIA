@@ -209,6 +209,7 @@ li.active a{
 	background-color: rgba(255,255,255,.9);
 	display: inline-block;
 	margin-top: .5em;
+	overflow: auto;
 }
 
 #process{
@@ -222,4 +223,33 @@ li.active a{
     font-weight: bold;
     border-radius: 5px;
     text-align: right;
+}
+
+#help{
+	background-color: #DDD;
+	border: 1px solid #999;
+	display: inline-block;
+	float: left;
+	height: 150px;
+	position: relative;
+	width: 100%;
+}
+
+#help div{
+	display: inline-block;
+	vertical-align: top;
+}
+
+.ayuda{
+	width: 55%;
+}
+
+.credito{
+	width: 40%;
+	border-left: 2px groove #FFFFFF;
+}
+
+.credito p{
+	text-align: left;
+	margin-left: 1em;
 }
